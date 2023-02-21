@@ -1,23 +1,38 @@
-﻿using Features.Clientes;
+﻿using Bogus;
+using Bogus.DataSets;
+using Features.Clientes;
 using Xunit;
 
-namespace Features.Tests._02___Fixtures
+namespace Features.Tests
 {
     [CollectionDefinition(nameof(ClienteCollection))]
-    public class ClienteCollection : ICollectionFixture<ClienteTestsFixture>  { }
+    public class ClienteCollection : ICollectionFixture<ClienteTestsFixture> { }
 
     public class ClienteTestsFixture : IDisposable
     {
         public Cliente GerarClienteValido()
         {
-            var cliente = new Cliente(
-                                        id: Guid.NewGuid(),
-                                        nome: "Anderson",
-                                        sobrenome: "Mota",
-                                        dataNascimento: DateTime.Now.AddYears(-28),
-                                        email: "anderson@gmail.com",
-                                        ativo: true,
-                                        dataCadastro: DateTime.Now);
+            var genero = new Faker().PickRandom<Name.Gender>();
+
+
+            // Gera um email aleatório
+            /*var email = new Faker().Internet.Email();
+            var clienteFaker = new Faker<Cliente>();
+            clienteFaker.RuleFor(c => c.Nome, (f, c) => f.Name.FirstName());*/
+
+
+            var cliente = new Faker<Cliente>("pt_BR")
+                .CustomInstantiator(f => new Cliente(
+                    Guid.NewGuid(),
+                    f.Name.FirstName(genero),
+                    f.Name.LastName(genero),
+                    "",
+                    true,
+                    f.Date.Past(80, DateTime.Now.AddYears(-18)),
+                    DateTime.Now ))
+                .RuleFor( c => c.Email, (f, c) => 
+                    f.Internet.Email(c.Nome.ToLower(), c.Sobrenome.ToLower()));// Regra para criar o e-mail com base no nome e sobrenome
+
             return cliente;
         }
 
@@ -37,7 +52,7 @@ namespace Features.Tests._02___Fixtures
 
         public void Dispose()
         {
-            
+
         }
     }
 }
