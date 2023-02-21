@@ -13,17 +13,20 @@ namespace Features.Clientes
         public string Email { get; private set; }
         public bool Ativo { get; private set; }
 
-        protected Cliente() { }
+        protected Cliente()
+        {
+        }
 
-        public Cliente(Guid id, string nome, string sobrenome, string email, bool ativo, DateTime dataNascimento, DateTime dataCadastro)
+        public Cliente(Guid id, string nome, string sobrenome, DateTime dataNascimento, string email, bool ativo,
+            DateTime dataCadastro)
         {
             Id = id;
             Nome = nome;
             Sobrenome = sobrenome;
             DataNascimento = dataNascimento;
             Email = email;
-            DataCadastro = dataCadastro;
             Ativo = ativo;
+            DataCadastro = dataCadastro;
         }
 
         public string NomeCompleto()
@@ -46,7 +49,6 @@ namespace Features.Clientes
             ValidationResult = new ClienteValidacao().Validate(this);
             return ValidationResult.IsValid;
         }
-
     }
 
     public class ClienteValidacao : AbstractValidator<Cliente>
@@ -59,7 +61,7 @@ namespace Features.Clientes
 
             RuleFor(c => c.Sobrenome)
                 .NotEmpty().WithMessage("Por favor, certifique-se de ter inserido o sobrenome")
-                .Length(2, 150).WithMessage("O sobrenome deve ter entre 2 e 150 caracteres");
+                .Length(2, 150).WithMessage("O Sobrenome deve ter entre 2 e 150 caracteres");
 
             RuleFor(c => c.DataNascimento)
                 .NotEmpty()
@@ -74,10 +76,9 @@ namespace Features.Clientes
                 .NotEqual(Guid.Empty);
         }
 
-        public static bool HaveMinimumAge (DateTime birthDate)
+        public static bool HaveMinimumAge(DateTime birthDate)
         {
             return birthDate <= DateTime.Now.AddYears(-18);
         }
-
     }
 }

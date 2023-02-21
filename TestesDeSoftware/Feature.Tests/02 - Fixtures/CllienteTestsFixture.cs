@@ -26,12 +26,12 @@ namespace Features.Tests
                     Guid.NewGuid(),
                     f.Name.FirstName(genero),
                     f.Name.LastName(genero),
+                    f.Date.Past(80, DateTime.Now.AddYears(-18)),
                     "",
                     true,
-                    f.Date.Past(80, DateTime.Now.AddYears(-18)),
-                    DateTime.Now ))
-                .RuleFor( c => c.Email, (f, c) => 
-                    f.Internet.Email(c.Nome.ToLower(), c.Sobrenome.ToLower()));// Regra para criar o e-mail com base no nome e sobrenome
+                    DateTime.Now))
+                .RuleFor(c => c.Email, (f, c) =>
+                    f.Internet.Email(c.Nome.ToLower(), c.Sobrenome.ToLower()));
 
             return cliente;
         }

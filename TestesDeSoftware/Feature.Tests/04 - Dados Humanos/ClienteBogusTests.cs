@@ -1,20 +1,20 @@
 ﻿using Xunit;
 
-namespace Features.Tests._04___Dados_Humanos
+namespace Features.Tests
 {
-    [Collection(nameof(ClienteCollection))]
+    [Collection(nameof(ClienteBogusCollection))]
     public class ClienteBogusTests
     {
-        private readonly ClienteTestsFixture _clienteTestsFixture;
+        private readonly ClienteTestsBogusFixture _clienteTestsFixture;
 
-        public ClienteBogusTests(ClienteTestsFixture clienteTestsFixture)
+        public ClienteBogusTests(ClienteTestsBogusFixture clienteTestsFixture)
         {
             _clienteTestsFixture = clienteTestsFixture;
         }
 
         [Fact(DisplayName = "Novo Cliente Válido")]
         [Trait("Categoria", "Cliente Bogus Testes")]
-        public void Cliente_NovoCliente_DeseEstarValido()
+        public void Cliente_NovoCliente_DeveEstarValido()
         {
             // Arrange
             var cliente = _clienteTestsFixture.GerarClienteValido();
@@ -22,14 +22,13 @@ namespace Features.Tests._04___Dados_Humanos
             // Act
             var result = cliente.EhValido();
 
-
-            // Assert
+            // Assert 
             Assert.True(result);
             Assert.Equal(0, cliente.ValidationResult.Errors.Count);
         }
 
         [Fact(DisplayName = "Novo Cliente Inválido")]
-        [Trait("Categoria", "Client Trati Testes")]
+        [Trait("Categoria", "Cliente Bogus Testes")]
         public void Cliente_NovoCliente_DeveEstarInvalido()
         {
             // Arrange
@@ -38,7 +37,7 @@ namespace Features.Tests._04___Dados_Humanos
             // Act
             var result = cliente.EhValido();
 
-            // Assert
+            // Assert 
             Assert.False(result);
             Assert.NotEqual(0, cliente.ValidationResult.Errors.Count);
         }
