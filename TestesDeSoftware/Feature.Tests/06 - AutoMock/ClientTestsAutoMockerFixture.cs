@@ -2,15 +2,19 @@
 using Bogus;
 using Features.Clientes;
 using Xunit;
+using Moq.AutoMock;
 
 namespace Features.Tests
 {
-    [CollectionDefinition(nameof(ClienteBogusCollection))]
-    public class ClienteBogusCollection : ICollectionFixture<ClienteTestsBogusFixture>
+    [CollectionDefinition(nameof(ClienteAutoMockerCollection))]
+    public class ClienteAutoMockerCollection : ICollectionFixture<ClientTestsAutoMockerFixture>
     { }
 
-    public class ClienteTestsBogusFixture : IDisposable
+    public class ClientTestsAutoMockerFixture : IDisposable
     {
+        public ClienteService ClienteService;
+        public AutoMocker Mocker;
+
         public Cliente GerarClienteValido()
         {
             return GerarClientes(1, true).FirstOrDefault();
@@ -29,10 +33,6 @@ namespace Features.Tests
         public IEnumerable<Cliente> GerarClientes(int quantidade, bool ativo)
         {
             var genero = new Faker().PickRandom<Name.Gender>();
-
-            //var email = new Faker().Internet.Email("eduardo","pires","gmail");
-            //var clientefaker = new Faker<Cliente>();
-            //clientefaker.RuleFor(c => c.Nome, (f, c) => f.Name.FirstName());
 
             var clientes = new Faker<Cliente>("pt_BR")
                 .CustomInstantiator(f => new Cliente(
@@ -64,6 +64,13 @@ namespace Features.Tests
                     DateTime.Now));
 
             return cliente;
+        }
+
+        public ClienteService ObterClienteService()
+        {
+            Mocker = new AutoMocker();
+            ClienteService = Mocker.CreateInstance<ClienteService>();
+            return ClienteService;
         }
 
 
