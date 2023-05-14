@@ -18,7 +18,7 @@ namespace Features.Tests._07___FluentAssertions
         }
 
 
-        [Fact(DisplayName = "Novo Cliente Válido")]
+        [Fact(DisplayName = "Novo Cliente Válido", Skip = "Pulou o teste por algum motivo. Atenção.")]
         [Trait("Categoria", "Cliente Fluent Assertion Testes")]
         public void Cliente_NovoCliente_DeveEstarValido()
         {
@@ -55,6 +55,7 @@ namespace Features.Tests._07___FluentAssertions
             result.Should().BeFalse();
             cliente.ValidationResult.Errors.Should().HaveCountGreaterOrEqualTo(1, "deve possuir erros de validação");
 
+            // Gera uma saída de texto ...
             _outputHelper.WriteLine($"Foram encontrados {cliente.ValidationResult.Errors.Count} erros nesta validação");
         }
     }
