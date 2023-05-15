@@ -47,7 +47,7 @@ namespace NerdStore.Vendas.Domain
 
                 quantidadeItens += itemExistente.Quantidade;
             }
-             
+
             if (quantidadeItens > MAX_UNIDADES_ITEM)
                 throw new DomainException($"Máximo de {MAX_UNIDADES_ITEM} unidades por produto. ");
         }
@@ -82,6 +82,16 @@ namespace NerdStore.Vendas.Domain
 
             CalcularValorPedido();
         }
+
+        public void RemoverItem(PedidoItem pedidoItem)
+        {
+            ValidarPedidoItemExistente(pedidoItem);
+
+            _pedidoItens.Remove(pedidoItem);
+
+            CalcularValorPedido();
+        }
+
 
         public void TornarRascunho()
         {
