@@ -16,10 +16,10 @@ namespace NerdStore.Vendas.Domain
 
 
         public Voucher(string codigo, 
-                       decimal? valorDesconto, 
                        decimal? percentualDesconto, 
+                       decimal? valorDesconto,
+                       int quantidade,
                        TipoDescontoVoucher tipoDescontoVoucher, 
-                       int quantidade, 
                        DateTime dataValidade, 
                        bool ativo, bool utilizado)
         {

@@ -9,7 +9,7 @@ namespace NerdStore.Vendas.Domain.Tests
         public void Voucher_ValidarVoucherTipoValor_DeveEstarValido()
         {
             // Arrange
-            var voucher = new Voucher("PROMO-15-REAIS", 15, null, TipoDescontoVoucher.Valor, 1, DateTime.Now.AddDays(15), true, false);
+            var voucher = new Voucher("PROMO-15-REAIS", 15, null, 1, TipoDescontoVoucher.Valor,  DateTime.Now.AddDays(15), true, false);
 
             // Act
             var result = voucher.ValidarSeAplicavel();
@@ -23,7 +23,7 @@ namespace NerdStore.Vendas.Domain.Tests
         public void Voucher_ValidarVoucherTipoValor_DeveEstarInValido()
         {
             // Arrange
-            var voucher = new Voucher("", null, null, TipoDescontoVoucher.Valor, 0, DateTime.Now.AddDays(-1), false, true);
+            var voucher = new Voucher("", null, null, 0, TipoDescontoVoucher.Valor,  DateTime.Now.AddDays(-1), false, true);
                 
             // Act
             var result = voucher.ValidarSeAplicavel();
