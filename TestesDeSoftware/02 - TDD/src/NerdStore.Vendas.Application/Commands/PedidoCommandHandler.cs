@@ -1,6 +1,9 @@
 ﻿using MediatR;
+using NerdStore.Core.DomainObjects;
+using NerdStore.Core.Messages;
 using NerdStore.Vendas.Application.Eventts;
 using NerdStore.Vendas.Domain;
+using System.Threading;
 
 namespace NerdStore.Vendas.Application.Commands
 {
@@ -17,16 +20,46 @@ namespace NerdStore.Vendas.Application.Commands
 
         public async Task<bool> Handle(AdicionarItemPedidoCommand message, CancellationToken cancellationToken)
         {
-            var pedidoItem = new PedidoItem(message.ProdutoId, message.Nome, message.Quantidade, message.ValorUnitario);
-            var pedido = Pedido.PedidoFactory.NovoPedidoRascunho(message.ClienteId);
-            pedido.AdicionarItem(pedidoItem);
+            if (!ValidarComando(message)) return false;
 
-            _pedidoRepository.Adicionar(pedido);
+            var pedido = await _pedidoRepository.ObterPedidoRascunhoPorClienteId(message.ClienteId);
+            var pedidoItem = new PedidoItem(message.ProdutoId, message.Nome, message.Quantidade, message.ValorUnitario);
+
+            if (pedido == null)
+            {
+                pedido = Pedido.PedidoFactory.NovoPedidoRascunho(message.ClienteId);
+                pedido.AdicionarItem(pedidoItem);
+                _pedidoRepository.Adicionar(pedido);
+            }
+            else
+            {
+                var pedidoItemExistente = pedido.PedidoItemExistente(pedidoItem);
+                pedido.AdicionarItem(pedidoItem);
+
+                if (pedidoItemExistente)
+                    _pedidoRepository.AtualizarItem(pedido.PedidoItems.FirstOrDefault(p => p.ProdutoId == pedidoItem.ProdutoId));
+                else
+                    _pedidoRepository.AdicionarItem(pedidoItem);
+
+                _pedidoRepository.Atualizar(pedido);
+            }
 
             pedido.AdicionarEvento(new PedidoItemAdicionadoEvent(pedido.ClienteId, pedido.Id, message.ProdutoId,
                 message.Nome, message.ValorUnitario, message.Quantidade));
 
             return await _pedidoRepository.UnitOfWork.Commit();
+        }
+
+        public bool ValidarComando(Command message)
+        {
+            if (message.EhValido()) return true;
+
+            foreach (var item in message.ValidationResult.Errors)
+            {
+                _mediatr.Publish(new DomainNotification(message.MessageType, item.ErrorMessage));
+            }
+
+            return false;
         }
     }
 }
